@@ -26,51 +26,70 @@ class HelpModal extends React.Component {
 	};
 
 	defaultShortcuts = () => {
+		const { translate } = this.props;
 		return [
-			{ c: this.props.translate( 'Copy' ), x: this.props.translate( 'Cut' ) },
-			{ v: this.props.translate( 'Paste' ), a: this.props.translate( 'Select all' ) },
-			{ z: this.props.translate( 'Undo' ), y: this.props.translate( 'Redo' ) },
-			{ b: this.props.translate( 'Bold' ), i: this.props.translate( 'Italic' ) },
-			{ u: this.props.translate( 'Underline' ), k: this.props.translate( 'Insert/edit link' ) },
+			[ 'c', translate( 'Copy' ), 'x', translate( 'Cut' ) ],
+			[ 'v', translate( 'Paste' ), 'a', translate( 'Select all' ) ],
+			[ 'z', translate( 'Undo' ), 'y', translate( 'Redo' ) ],
+			[ 'b', translate( 'Bold' ), 'i', translate( 'Italic' ) ],
+			[ 'u', translate( 'Underline' ), 'k', translate( 'Insert/edit link' ) ],
 		];
 	};
 
 	additionalShortcuts = () => {
+		const { translate } = this.props;
 		return [
-			{ 1: this.props.translate( 'Heading 1' ), 2: this.props.translate( 'Heading 2' ) },
-			{ 3: this.props.translate( 'Heading 3' ), 4: this.props.translate( 'Heading 4' ) },
-			{ 5: this.props.translate( 'Heading 5' ), 6: this.props.translate( 'Heading 6' ) },
-			{ l: this.props.translate( 'Align left' ), c: this.props.translate( 'Align center' ) },
-			{ r: this.props.translate( 'Align right' ), j: this.props.translate( 'Justify' ) },
-			{ d: this.props.translate( 'Strikethrough' ), q: this.props.translate( 'Blockquote' ) },
-			{ u: this.props.translate( 'Bullet list' ), o: this.props.translate( 'Numbered list' ) },
-			{ a: this.props.translate( 'Insert/edit link' ), s: this.props.translate( 'Remove link' ) },
-			{
-				m: this.props.translate( 'Insert/edit image' ),
-				t: this.props.translate( 'Insert Read More tag' ),
-			},
-			{ h: this.props.translate( 'Keyboard Shortcuts' ), x: this.props.translate( 'Code' ) },
-			{ p: this.props.translate( 'Insert Page Break tag' ) },
+			[ 1, translate( 'Heading 1' ), 2, translate( 'Heading 2' ) ],
+			[ 3, translate( 'Heading 3' ), 4, translate( 'Heading 4' ) ],
+			[ 5, translate( 'Heading 5' ), 6, translate( 'Heading 6' ) ],
+			[ 'l', translate( 'Align left' ), 'c', translate( 'Align center' ) ],
+			[ 'r', translate( 'Align right' ), 'j', translate( 'Justify' ) ],
+			[ 'd', translate( 'Strikethrough' ), 'q', translate( 'Blockquote' ) ],
+			[ 'u', translate( 'Bulleted list' ), 'o', translate( 'Numbered list' ) ],
+			[ 'a', translate( 'Insert/edit link' ), 's', translate( 'Remove link' ) ],
+			[ 'm', translate( 'Insert/edit image' ), 't', translate( 'Insert Read More tag' ) ],
+			[ 'h', translate( 'Keyboard Shortcuts' ), 'x', translate( 'Code' ) ],
+			[ 'p', translate( 'Insert Page Break tag' ) ],
 		];
 	};
 
-	renderRow = ( row, index ) => {
-		let columns = [];
+	spaceFormatShortcuts = () => {
+		const { translate } = this.props;
+		return [
+			[ '*', translate( 'Bulleted list' ), '1.', translate( 'Numbered list' ) ],
+			[ '-', translate( 'Bulleted list' ), '1)', translate( 'Numbered list' ) ],
+		];
+	};
 
-		forEach( row, ( text, key ) => {
-			columns.push(
-				<th className="wpcom-help__key" key={ key }>
-					<kbd>{ key }</kbd>
-				</th>
-			);
-			columns.push(
-				<td className="wpcom-help__action" key={ text }>
-					{ text }
-				</td>
-			);
+	enterFormatShortcuts = () => {
+		const { translate } = this.props;
+		return [
+			[ '>', translate( 'Blockquote' ), '##', translate( 'Heading 2' ) ],
+			[ '###', translate( 'Heading 3' ), '####', translate( 'Heading 4' ) ],
+			[ '#####', translate( 'Heading 5' ), '######', translate( 'Heading 6' ) ],
+			[ '---', translate( 'Horizontal line' ) ],
+		];
+	};
+
+	renderRow = ( row, rowIndex ) => {
+		let columns = [];
+		forEach( row, ( cell, cellIndex ) => {
+			if ( cellIndex % 2 === 0 ) {
+				columns.push(
+					<th className="wpcom-help__key" key={ cell }>
+						<kbd>{ cell }</kbd>
+					</th>
+				);
+			} else {
+				columns.push(
+					<td className="wpcom-help__action" key={ cell }>
+						{ cell }
+					</td>
+				);
+			}
 		} );
 
-		return <tr key={ index }>{ columns }</tr>;
+		return <tr key={ rowIndex }>{ columns }</tr>;
 	};
 
 	getButtons = () => {
@@ -105,17 +124,20 @@ class HelpModal extends React.Component {
 	};
 
 	render() {
+		const translate = this.props.translate;
 		const defaultText = this.props.macosx
-			? this.props.translate( 'Default shortcuts, Command + key:', { context: 'Mac shortcuts' } )
-			: this.props.translate( 'Default shortcuts, Ctrl + key:', { context: 'Windows shortcuts' } );
+			? translate( 'Default shortcuts, Command + key:', { context: 'Mac shortcuts' } )
+			: translate( 'Default shortcuts, Ctrl + key:', { context: 'Windows shortcuts' } );
 
 		const additionalText = this.props.macosx
-			? this.props.translate( 'Additional shortcuts, Control + Option + key:', {
+			? translate( 'Additional shortcuts, Control + Option + key:', {
 					context: 'Mac shortcuts',
 				} )
-			: this.props.translate( 'Additional shortcuts, Shift + Alt + key:', {
+			: translate( 'Additional shortcuts, Shift + Alt + key:', {
 					context: 'Windows shortcuts',
 				} );
+
+		const tableHead = this.getTableHead();
 
 		return (
 			<Dialog
@@ -124,16 +146,26 @@ class HelpModal extends React.Component {
 				additionalClassNames="wpcom-help__dialog"
 				onClose={ this.props.onClose }
 			>
-				<h2 className="wpcom-help__heading">{ this.props.translate( 'Keyboard Shortcuts' ) }</h2>
+				<h2 className="wpcom-help__heading">{ translate( 'Keyboard Shortcuts' ) }</h2>
 				<p>{ defaultText }</p>
 				<table className="wpcom-help__table">
-					{ this.getTableHead() }
+					{ tableHead }
 					<tbody>{ this.defaultShortcuts().map( this.renderRow, this ) }</tbody>
 				</table>
 				<p>{ additionalText }</p>
 				<table className="wpcom-help__table">
-					{ this.getTableHead() }
+					{ tableHead }
 					<tbody>{ this.additionalShortcuts().map( this.renderRow, this ) }</tbody>
+				</table>
+				<p>{ translate( 'Formatting shortcuts, key, then space:' ) }</p>
+				<table className="wpcom-help__table">
+					{ tableHead }
+					<tbody>{ this.spaceFormatShortcuts().map( this.renderRow, this ) }</tbody>
+				</table>
+				<p>{ translate( 'Formatting shortcuts, key, then Enter:' ) }</p>
+				<table className="wpcom-help__table">
+					{ tableHead }
+					<tbody>{ this.enterFormatShortcuts().map( this.renderRow, this ) }</tbody>
 				</table>
 			</Dialog>
 		);
