@@ -95,9 +95,9 @@ class Search extends Component {
 		this.instanceId = uniqueId();
 
 		this.state = {
-			keyword: this.props.initialValue || '',
-			isOpen: !! this.props.isOpen,
-			hasFocus: false,
+			keyword: props.initialValue || '',
+			isOpen: !! props.isOpen,
+			hasFocus: props.autoFocus,
 		};
 
 		this.closeListener = keyListener.bind( this, 'closeSearch' );
@@ -167,11 +167,6 @@ class Search extends Component {
 		this.onSearch = this.props.delaySearch
 			? debounce( this.props.onSearch, this.props.delayTimeout )
 			: this.props.onSearch;
-
-		if ( this.props.autoFocus ) {
-			// this hack makes autoFocus work correctly in Dropdown
-			setTimeout( () => this.focus(), 0 );
-		}
 	}
 
 	scrollOverlay = () => {
@@ -204,13 +199,9 @@ class Search extends Component {
 		return scrollLeft;
 	};
 
-	focus = () => {
-		// if we call focus before the element has been entirely synced up with the DOM, we stand a decent chance of
-		// causing the browser to scroll somewhere odd. Instead, defer the focus until a future turn of the event loop.
-		setTimeout( () => this.searchInput && this.searchInput.focus(), 0 );
-	};
-
 	blur = () => this.searchInput.blur();
+
+	focus = () => this.searchInput.focus();
 
 	clear = () => this.setState( { keyword: '' } );
 
@@ -223,9 +214,7 @@ class Search extends Component {
 	};
 
 	onChange = event => {
-		this.setState( {
-			keyword: event.target.value,
-		} );
+		this.setState( { keyword: event.target.value } );
 	};
 
 	openSearch = event => {
@@ -347,6 +336,7 @@ class Search extends Component {
 				</div>
 				<div className={ fadeDivClass }>
 					<input
+						autoFocus={ this.props.autoFocus } // eslint-disable-line jsx-a11y/no-autofocus
 						type="search"
 						id={ 'search-component-' + this.instanceId }
 						className={ inputClass }
