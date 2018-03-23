@@ -3,50 +3,49 @@
 /**
  * External dependencies
  */
-import deepFreeze from 'deep-freeze';
 import { cloneDeepWith } from 'lodash';
 
-const queryManagerSchema = deepFreeze( {
+const queryManagerSchema = Object.feeze( {
 	additionalProperties: false,
-	required: [ 'data', 'options' ],
+	required: Object.freeze( [ 'data', 'options' ] ),
 	type: 'object',
-	properties: {
-		data: {
+	properties: Object.feeze( {
+		data: Object.feeze( {
 			additionalProperties: false,
 			type: 'object',
-			properties: {
-				items: { type: 'object' },
-				queries: {
+			properties: Object.feeze( {
+				items: Object.feeze( { type: 'object' } ),
+				queries: Object.feeze( {
 					additionalProperties: false,
 					type: 'object',
-					patternProperties: {
+					patternProperties: Object.feeze( {
 						// Stringified query objects are the keys
-						'^\\[.*\\]$': {
-							required: [ 'itemKeys' ],
+						'^\\[.*\\]$': Object.feeze( {
+							required: Object.freeze( [ 'itemKeys' ] ),
 							type: 'object',
-							properties: {
-								itemKeys: {
+							properties: Object.feeze( {
+								itemKeys: Object.feeze( {
 									type: 'array',
-									items: { type: [ 'string', 'integer' ] },
-								},
-								found: {
+									items: Object.feeze( { type: Object.freeze( [ 'string', 'integer' ] ) } ),
+								} ),
+								found: Object.feeze( {
 									type: 'integer',
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		options: {
+								} ),
+							} ),
+						} ),
+					} ),
+				} ),
+			} ),
+		} ),
+		options: Object.feeze( {
 			additionalProperties: true,
-			required: [ 'itemKey' ],
+			required: Object.freeze( [ 'itemKey' ] ),
 			type: 'object',
-			properties: {
-				itemKey: { type: 'string' },
-			},
-		},
-	},
+			properties: Object.feeze( {
+				itemKey: Object.feeze( { type: 'string' } ),
+			} ),
+		} ),
+	} ),
 } );
 
 /**
