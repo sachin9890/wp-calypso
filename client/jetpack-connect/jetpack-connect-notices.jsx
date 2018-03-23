@@ -11,11 +11,13 @@ import { localize } from 'i18n-calypso';
  * Internal dependencies
  */
 import {
+	ACTIVATE_FAILURE,
 	ACTIVATION_RESPONSE_ERROR,
 	ALREADY_CONNECTED,
 	ALREADY_CONNECTED_BY_OTHER_USER,
 	ALREADY_OWNED,
 	DEFAULT_AUTHORIZE_ERROR,
+	INSTALL_FAILURE,
 	INSTALL_RESPONSE_ERROR,
 	IS_DOT_COM,
 	JETPACK_IS_DISCONNECTED,
@@ -45,11 +47,13 @@ export class JetpackConnectNotices extends Component {
 		// instead of showing a notice.
 		onTerminalError: PropTypes.func,
 		noticeType: PropTypes.oneOf( [
+			ACTIVATE_FAILURE,
 			ACTIVATION_RESPONSE_ERROR,
 			ALREADY_CONNECTED,
 			ALREADY_CONNECTED_BY_OTHER_USER,
 			ALREADY_OWNED,
 			DEFAULT_AUTHORIZE_ERROR,
+			INSTALL_FAILURE,
 			INSTALL_RESPONSE_ERROR,
 			IS_DOT_COM,
 			LOGIN_FAILURE,
@@ -110,6 +114,12 @@ export class JetpackConnectNotices extends Component {
 		}
 
 		switch ( noticeType ) {
+			case ACTIVATE_FAILURE:
+				noticeValues.text = translate(
+					'We were unable to activate Jetpack. Please upgrade your WordPress version.'
+				);
+				return noticeValues;
+
 			case ACTIVATION_RESPONSE_ERROR:
 				noticeValues.text = translate(
 					'We were unable to activate Jetpack. You can either {{manualInstall}}install Jetpack manually{{/manualInstall}} ' +
@@ -187,6 +197,12 @@ export class JetpackConnectNotices extends Component {
 							),
 						},
 					}
+				);
+				return noticeValues;
+
+			case INSTALL_FAILURE:
+				noticeValues.text = translate(
+					'We were unable to install Jetpack. Please upgrade your WordPress version.'
 				);
 				return noticeValues;
 
